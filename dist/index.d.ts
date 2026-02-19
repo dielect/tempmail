@@ -11,8 +11,8 @@ export interface Message {
     attachmentsCount: number;
 }
 /**
- * 创建临时邮箱
- * @returns 邮箱信息，包含 token 和邮箱地址
+ * Create a temporary mailbox
+ * @returns Mailbox info containing token and email address
  * @example
  * ```ts
  * const mailbox = await createMailbox();
@@ -25,9 +25,9 @@ export interface Message {
  */
 export declare function createMailbox(): Promise<Mailbox>;
 /**
- * 获取邮件列表
- * @param token - 创建邮箱时返回的 token
- * @returns 邮件列表
+ * Get messages for a mailbox
+ * @param token - The token returned from createMailbox
+ * @returns List of messages
  * @example
  * ```ts
  * const messages = await getMessages(token);
@@ -46,17 +46,17 @@ export declare function createMailbox(): Promise<Mailbox>;
  */
 export declare function getMessages(token: string): Promise<Message[]>;
 /**
- * TempMail 客户端类，自动管理 token
+ * TempMail client class with automatic token management
  */
 export declare class TempMail {
     private token;
     mailbox: string | null;
     /**
-     * 创建邮箱并保存 token
+     * Create a mailbox and store the token
      */
     create(): Promise<Mailbox>;
     /**
-     * 获取当前邮箱的邮件
+     * Get messages for the current mailbox
      */
     getMessages(): Promise<Message[]>;
 }

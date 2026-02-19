@@ -1,4 +1,5 @@
 import axios from "axios";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
 const BASE_URL = "https://web2.temp-mail.org";
 const DEFAULT_HEADERS = {
@@ -6,6 +7,23 @@ const DEFAULT_HEADERS = {
     "Content-Length": "0",
     "Cache-Control": "no-cache",
 };
+
+/**
+ * Get proxy agent from environment variables.
+ * Supports https_proxy / HTTPS_PROXY / http_proxy / HTTP_PROXY
+ */
+function getProxyAgent(): HttpsProxyAgent<string> | undefined {
+    const proxy =
+        process.env.https_proxy ||
+        process.env.HTTPS_PROXY ||
+        process.env.http_proxy ||
+        process.env.HTTP_PROXY;
+    if (proxy) {
+        console.log(`[tempmail] Using proxy: ${proxy}`);
+        return new HttpsProxyAgent(proxy);
+    }
+    return undefined;
+}
 
 export interface Mailbox {
     token: string;
@@ -22,8 +40,8 @@ export interface Message {
 }
 
 /**
- * 创建临时邮箱
- * @returns 邮箱信息，包含 token 和邮箱地址
+ * Create a temporary mailbox
+ * @returns Mailbox info containing token and email address
  * @example
  * ```ts
  * const mailbox = await createMailbox();
@@ -39,14 +57,16 @@ export async function createMailbox(): Promise<Mailbox> {
         method: "POST",
         url: `${BASE_URL}/mailbox`,
         headers: DEFAULT_HEADERS,
+        httpAgent: getProxyAgent(),
+        httpsAgent: getProxyAgent(),
     });
     return data;
 }
 
 /**
- * 获取邮件列表
- * @param token - 创建邮箱时返回的 token
- * @returns 邮件列表
+ * Get messages for a mailbox
+ * @param token - The token returned from createMailbox
+ * @returns List of messages
  * @example
  * ```ts
  * const messages = await getMessages(token);
@@ -71,19 +91,21 @@ export async function getMessages(token: string): Promise<Message[]> {
             ...DEFAULT_HEADERS,
             Authorization: `Bearer ${token}`,
         },
+        httpAgent: getProxyAgent(),
+        httpsAgent: getProxyAgent(),
     });
     return data.messages;
 }
 
 /**
- * TempMail 客户端类，自动管理 token
+ * TempMail client class with automatic token management
  */
 export class TempMail {
     private token: string | null = null;
     public mailbox: string | null = null;
 
     /**
-     * 创建邮箱并保存 token
+     * Create a mailbox and store the token
      */
     async create(): Promise<Mailbox> {
         const result = await createMailbox();
@@ -93,11 +115,11 @@ export class TempMail {
     }
 
     /**
-     * 获取当前邮箱的邮件
+     * Get messages for the current mailbox
      */
     async getMessages(): Promise<Message[]> {
         if (!this.token) {
-            throw new Error("请先调用 create() 创建邮箱");
+            throw new Error("Mailbox not created yet. Call create() first.");
         }
         return getMessages(this.token);
     }
