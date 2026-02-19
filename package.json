@@ -17,7 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "bun build src/index.ts --outdir dist --target node --format esm && bun build src/index.ts --outdir dist --target node --format cjs --outfile dist/index.cjs",
+    "build": "rm -rf dist && bun build src/index.ts --outdir dist --target node --format esm && bunx tsc --declaration --emitDeclarationOnly --outDir dist src/index.ts",
     "prepublishOnly": "bun run build"
   },
   "keywords": [
