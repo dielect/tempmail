@@ -6,10 +6,10 @@ Temp-mail.org SDK，提供创建临时邮箱和获取邮件的功能。
 
 ```bash
 # 从 GitHub 安装
-bun add github:你的用户名/tempmail-sdk
+bun add github:dielect/tempmail
 
 # 或者用 npm
-npm install github:你的用户名/tempmail-sdk
+npm install github:dielect/tempmail
 ```
 
 ## 使用
