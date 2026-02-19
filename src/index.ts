@@ -12,6 +12,8 @@ const DEFAULT_HEADERS = {
  * Get proxy agent from environment variables.
  * Supports https_proxy / HTTPS_PROXY / http_proxy / HTTP_PROXY
  */
+let proxyLogged = false;
+
 function getProxyAgent(): HttpsProxyAgent<string> | undefined {
     const proxy =
         process.env.https_proxy ||
@@ -19,7 +21,10 @@ function getProxyAgent(): HttpsProxyAgent<string> | undefined {
         process.env.http_proxy ||
         process.env.HTTP_PROXY;
     if (proxy) {
-        console.log(`[tempmail] Using proxy: ${proxy}`);
+        if (!proxyLogged) {
+            console.log(`[tempmail] Using proxy: ${proxy}`);
+            proxyLogged = true;
+        }
         return new HttpsProxyAgent(proxy);
     }
     return undefined;

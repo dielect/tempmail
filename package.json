@@ -1,6 +1,6 @@
 {
   "name": "tempmail",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Temp-mail.org SDK - 创建临时邮箱和获取邮件",
   "module": "dist/index.js",
   "main": "dist/index.cjs",

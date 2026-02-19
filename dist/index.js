@@ -15196,10 +15196,14 @@ var DEFAULT_HEADERS = {
   "Content-Length": "0",
   "Cache-Control": "no-cache"
 };
+var proxyLogged = false;
 function getProxyAgent() {
   const proxy = process.env.https_proxy || process.env.HTTPS_PROXY || process.env.http_proxy || process.env.HTTP_PROXY;
   if (proxy) {
-    console.log(`[tempmail] Using proxy: ${proxy}`);
+    if (!proxyLogged) {
+      console.log(`[tempmail] Using proxy: ${proxy}`);
+      proxyLogged = true;
+    }
     return new import_https_proxy_agent.HttpsProxyAgent(proxy);
   }
   return;
